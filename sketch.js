@@ -3,24 +3,26 @@ var cnv;
 var circles = [];
 var number = 6;
 
-var posX = [690, 740, 690, 590, 540, 590];
-var posY = [274, 360, 446, 446, 360, 274];
+var posX = [740, 840, 740, 540, 440, 540];
+var posY = [188, 360, 532, 532, 360, 188];
 
 function setup() {
   cnv = createCanvas(1280, 720);
   centerCanvas();
 
+  colorMode(HSB)
   for (let i = 0; i < number; i++){
-    circles[i] = new Circle(posX[i], posY[i], color('rgb(30,50,50)'), 70, 60*i-60);
+    circles[i] = new Circle(posX[i], posY[i], color(i*60,100,100,80), 190 + getRandom(20), getRandom(180));
   }
 
   noStroke();
 }
 
 function draw() {
+  clear();
   background(220);
 
-
+  blendMode(EXCLUSION)
   for (item of circles) {
     item.show();
     item.move();
@@ -40,7 +42,7 @@ function windowResized() {
 
 class Circle{
 
-  constructor(x, y, col, size = 70, dir = 45) {
+  constructor(x, y, col, size = 150, dir = 45) {
     this.x = x;
     this.y = y;
     this.col = col;
@@ -48,7 +50,7 @@ class Circle{
     this.dir = dir;
   }
 
-  speed = 2;
+  speed = 0.5;
   range = 5;
 
   show() {
@@ -68,17 +70,17 @@ class Circle{
   }
 
   walls() {
-    if (this.x >= 1280 && this.dir >= -90 && this.dir <= 90) {
+    if (this.x >= (1280 - this.size/3) && this.dir >= -90 && this.dir <= 90) {
       this.dir = flip(this.dir, 0)
     }
-    else if (this.x <= 0 && (this.dir > 90 || this.dir < -90)) {
+    else if (this.x <= this.size/3 && (this.dir > 90 || this.dir < -90)) {
       this.dir = flip(this.dir, 0)
     }
 
-    if (this.y >= 720 && this.dir > 0) {
+    if (this.y >= (720 - this.size/3) && this.dir > 0) {
       this.dir = flip(this.dir, 1)
     }
-    else if (this.y <= 0 && this.dir < 0) {
+    else if (this.y <= this.size/3 && this.dir < 0) {
       this.dir = flip(this.dir, 1)
     }
   }
