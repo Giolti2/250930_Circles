@@ -13,6 +13,8 @@ function setup() {
   for (let i = 0; i < number; i++){
     circles[i] = new Circle(posX[i], posY[i], color('rgb(30,50,50)'), 70, 60*i-60);
   }
+
+  noStroke();
 }
 
 function draw() {
@@ -22,6 +24,7 @@ function draw() {
   for (item of circles) {
     item.show();
     item.move();
+    item.walls();
   }
 }
 
@@ -45,7 +48,7 @@ class Circle{
     this.dir = dir;
   }
 
-  speed = 0.3;
+  speed = 2;
   range = 5;
 
   show() {
@@ -56,11 +59,43 @@ class Circle{
 
   move() {
     this.dir = this.dir + getRandom(this.range);
+    if (this.dir > 180)
+      this.dir -= 360;
+    if (this.dir < -180)
+      this.dir += 360;
     this.x += this.speed * Math.cos(this.dir * Math.PI / 180)
     this.y += this.speed * Math.sin(this.dir * Math.PI / 180)
+  }
+
+  walls() {
+    if (this.x >= 1280 && this.dir >= -90 && this.dir <= 90) {
+      this.dir = flip(this.dir, 0)
+    }
+    else if (this.x <= 0 && (this.dir > 90 || this.dir < -90)) {
+      this.dir = flip(this.dir, 0)
+    }
+
+    if (this.y >= 720 && this.dir > 0) {
+      this.dir = flip(this.dir, 1)
+    }
+    else if (this.y <= 0 && this.dir < 0) {
+      this.dir = flip(this.dir, 1)
+    }
   }
 }
 
 function getRandom(range) {
   return Math.random() * (range * 2) - range;
+}
+
+function flip(angle, axis) {
+  console.log('flip')
+  if (axis == 0) {
+    angle = 180 - angle;
+  }
+  else {
+    angle = -angle;
+  }
+
+  return angle;
 }
