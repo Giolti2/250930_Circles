@@ -1,18 +1,18 @@
 var cnv;
 
 var circles = [];
-var number = 6;
+var number = 8;
 
-var posX = [740, 840, 740, 540, 440, 540];
-var posY = [188, 360, 532, 532, 360, 188];
+var posX = [640, 780, 840, 780, 640, 500, 440, 500];
+var posY = [260, 320, 460, 600, 660, 600, 460, 320];
 
 function setup() {
-  cnv = createCanvas(1280, 720);
+  cnv = createCanvas(1280, 920);
   centerCanvas();
 
   colorMode(HSB)
   for (let i = 0; i < number; i++){
-    circles[i] = new Circle(posX[i], posY[i], color(i*60,100,100,0.8), 190 + getRandom(20), getRandom(180));
+    circles[i] = new Circle(posX[i], posY[i], color(i*45,100,100,0.8), 190 + getRandom(20), getRandom(180));
   }
 
   noStroke();
@@ -20,7 +20,7 @@ function setup() {
 
 function draw() {
   clear();
-
+  
   for (item of circles) {
     item.show();
     item.move();
