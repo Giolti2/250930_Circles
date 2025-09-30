@@ -3,8 +3,13 @@ var cnv;
 var circles = [];
 var number = 8;
 
+var animations = [];
+
 var posX = [640, 780, 840, 780, 640, 500, 440, 500];
 var posY = [260, 320, 460, 600, 660, 600, 460, 320];
+
+const MAXTIMER = 300;
+var timer = 0;
 
 function setup() {
   cnv = createCanvas(1280, 920);
@@ -25,6 +30,17 @@ function draw() {
     item.show();
     item.move();
     item.walls();
+  }
+
+  for (let i = 0; i < animations.length; i++) {
+    if (animations[i].update()) {
+      animations.splice(i, 1);
+      i--;
+    }
+  }
+
+  if (timer > 0) {
+    timer -= deltaTime;
   }
 }
 
@@ -82,6 +98,24 @@ class Circle{
       this.dir = flip(this.dir, 1)
     }
   }
+
+  click() {
+    let d = dist(this.x, this.y, mouseX, mouseY);
+    console.log("click")
+
+    if (d < this.size/2) {
+      this.grow()
+      timer = 300;
+    }
+  }
+
+  grow() {
+    let item = circles[Math.floor(Math.random() * circles.length)]
+    if (item.size > 20) {
+      animations.push(new LerpAnimation(item, this, 300))
+    }
+    console.log("grow")
+  }
 }
 
 function getRandom(range) {
@@ -89,7 +123,6 @@ function getRandom(range) {
 }
 
 function flip(angle, axis) {
-  console.log('flip')
   if (axis == 0) {
     angle = 180 - angle;
   }
@@ -98,4 +131,34 @@ function flip(angle, axis) {
   }
 
   return angle;
+}
+
+function mouseClicked() {
+  if (timer <= 0) {
+    for (item of circles) { 
+      item.click();
+    }
+  }
+}
+
+class LerpAnimation {
+  constructor(item1, item2, duration) {
+    this.item1 = item1;
+    this.item2 = item2;
+    this.start = millis();
+    this.duration = duration;
+
+    this.from1 = item1.size;
+    this.from2 = item2.size;
+    this.increment = 20;
+  }
+
+  update() {
+    let t = (millis() - this.start) / this.duration;
+    
+    this.item1.size = lerp(this.from1, this.from1 - this.increment, t);
+    this.item2.size = lerp(this.from2, this.from2 + this.increment, t);
+
+    return ((millis() - this.start) > this.duration);
+  }
 }
