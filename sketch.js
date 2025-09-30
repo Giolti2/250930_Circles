@@ -11,7 +11,7 @@ function setup() {
   centerCanvas();
 
   for (let i = 0; i < number; i++){
-    circles[i] = new Circle(posX[i], posY[i], color('rgb(30,50,50)'));
+    circles[i] = new Circle(posX[i], posY[i], color('rgb(30,50,50)'), 70, 60*i-60);
   }
 }
 
@@ -37,11 +37,10 @@ function windowResized() {
 
 class Circle{
 
-  constructor(x, y, col, text = '', size = 70, dir = 45) {
+  constructor(x, y, col, size = 70, dir = 45) {
     this.x = x;
     this.y = y;
     this.col = col;
-    this.text = text;
     this.size = size;
     this.dir = dir;
   }
