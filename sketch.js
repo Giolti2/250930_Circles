@@ -1,3 +1,5 @@
+const INCREMENT = 60;
+
 var cnv;
 
 var circles = [];
@@ -17,7 +19,7 @@ function setup() {
 
   colorMode(HSB)
   for (let i = 0; i < number; i++){
-    circles[i] = new Circle(posX[i], posY[i], color(i*45,100,100,0.8), 100 + getRandom(60), getRandom(180));
+    circles[i] = new Circle(posX[i], posY[i], color(i*45,100,100,0.8), 100 + getRandom(60), getRandom(180), i);
   }
 
   noStroke();
@@ -56,12 +58,13 @@ function windowResized() {
 
 class Circle{
 
-  constructor(x, y, col, size = 150, dir = 45) {
+  constructor(x, y, col, size = 150, dir = 45, tag) {
     this.x = x;
     this.y = y;
     this.col = col;
     this.size = size;
     this.dir = dir;
+    this.tag = tag;
   }
 
   speed = 0.5;
@@ -101,7 +104,6 @@ class Circle{
 
   click() {
     let d = dist(this.x, this.y, mouseX, mouseY);
-    console.log("click")
 
     if (d < this.size/2) {
       this.grow()
@@ -110,11 +112,17 @@ class Circle{
   }
 
   grow() {
-    let item = circles[Math.floor(Math.random() * circles.length)]
-    if (item.size > 20) {
+    if (checkSizes(this.tag)) {
+
+      let item;
+      do {
+        item = circles[Math.floor(Math.random() * circles.length)]
+      }
+      while (this.tag == item.tag || item.size < INCREMENT + 20)
+    
       animations.push(new LerpAnimation(item, this, 300))
+
     }
-    console.log("grow")
   }
 }
 
@@ -150,15 +158,27 @@ class LerpAnimation {
 
     this.from1 = item1.size;
     this.from2 = item2.size;
-    this.increment = 20;
   }
 
   update() {
     let t = (millis() - this.start) / this.duration;
     
-    this.item1.size = lerp(this.from1, this.from1 - this.increment, t);
-    this.item2.size = lerp(this.from2, this.from2 + this.increment, t);
+    this.item1.size = lerp(this.from1, this.from1 - INCREMENT, t);
+    this.item2.size = lerp(this.from2, this.from2 + INCREMENT, t);
 
     return ((millis() - this.start) > this.duration);
   }
 }
+
+function checkSizes(tag) {
+  for (item of circles) {
+    if ((item.tag != tag) && (item.size > INCREMENT + 20)) {
+      console.log("true "+item.tag+" "+tag)
+      return true;
+    }
+  }
+
+  console.log("false")
+  return false;
+}
+
