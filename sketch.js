@@ -56,6 +56,7 @@ function draw() {
     item.show();
     item.move();
     item.walls();
+    item.breathe();
   }
 
   AI.update();
@@ -94,14 +95,38 @@ class Circle{
     this.dir = dir;
     this.tag = tag;
     this.reached = false;
+
+    this.breathStart = millis();
+    this.breathDur = MAXTIMER*5 + getRandom(500);
+    this.breathTime = 0;
+    this.breathSize = 0;
   }
 
   speed = 0.5;
   range = 5;
 
+  breathe() {
+    if (AI.reached) {
+      if (millis() - this.breathStart > this.breathDur * 2) {
+        this.breathStart = millis();
+      }
+
+      else if (millis() - this.breathStart < this.breathDur ) {
+        this.breathTime = (millis() - this.breathStart)/this.breathDur
+        this.breathSize = lerp(0, 20, this.breathTime)
+      }
+
+      else if (millis() - this.breathStart > this.breathDur) {
+        this.breathTime = (millis() - this.breathStart - this.breathDur)/this.breathDur
+        this.breathSize = lerp(20, 0, this.breathTime)
+      }
+      
+    }
+  }
+
   show() {
     fill(this.col);
-    circle(this.x, this.y, this.size);
+    circle(this.x, this.y, this.size + this.breathSize);
     noFill();
   }
 
