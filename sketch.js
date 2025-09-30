@@ -17,7 +17,7 @@ function setup() {
 
   colorMode(HSB)
   for (let i = 0; i < number; i++){
-    circles[i] = new Circle(posX[i], posY[i], color(i*45,100,100,0.8), 130 + getRandom(30), getRandom(180));
+    circles[i] = new Circle(posX[i], posY[i], color(i*45,100,100,0.8), 100 + getRandom(60), getRandom(180));
   }
 
   noStroke();
